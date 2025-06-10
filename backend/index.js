@@ -25,7 +25,7 @@ app.use(express.json());
 
 // Routes
 app.use(UserRoute);
-app.use(BarangRoute);
+app.use('/barang', BarangRoute);
 
 // Error handling middleware (letakkan di akhir)
 app.use((err, req, res, next) => {

@@ -38,18 +38,71 @@
               <th>Kondisi</th>
               <th>Lokasi</th>
               <th>Keterangan</th>
+              <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td colspan="9" class="loading">Memuat data...</td>
+              <td colspan="10" class="loading">Memuat data...</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
-  
+  <style>
+    .aksi-btn {
+      display: inline-block;
+      margin: 0 2px;
+      padding: 4px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.95em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-edit {
+      background: #f7c948;
+      color: #222;
+    }
+    .btn-edit:hover {
+      background: #f0b429;
+    }
+    .btn-delete {
+      background: #e74c3c;
+      color: #fff;
+    }
+    .btn-delete:hover {
+      background: #c0392b;
+    }
+  </style>
+  <div id="editModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" id="closeEditModal">&times;</span>
+      <h3>Edit Barang</h3>
+      <form id="editBarangForm">
+        <input type="hidden" id="edit_id">
+        <div class="form-group"><label>Kode Barang</label><input type="text" id="edit_kode_barang" readonly></div>
+        <div class="form-group"><label>Nama Barang</label><input type="text" id="edit_nama_barang" required></div>
+        <div class="form-group"><label>Kategori</label><input type="text" id="edit_kategori" required></div>
+        <div class="form-group"><label>Jumlah</label><input type="number" id="edit_jumlah" required min="1"></div>
+        <div class="form-group"><label>Satuan</label><input type="text" id="edit_satuan" required></div>
+        <div class="form-group"><label>Kondisi</label><input type="text" id="edit_kondisi" required></div>
+        <div class="form-group"><label>Lokasi</label><input type="text" id="edit_lokasi" required></div>
+        <div class="form-group"><label>Keterangan</label><input type="text" id="edit_keterangan"></div>
+        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+      </form>
+    </div>
+  </div>
+  <style>
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100vw; height: 100vh; overflow: auto; background: rgba(0,0,0,0.3); }
+    .modal-content { background: #fff; margin: 5% auto; padding: 20px 30px; border-radius: 8px; width: 350px; position: relative; }
+    .close-modal { position: absolute; right: 16px; top: 10px; font-size: 1.5em; cursor: pointer; color: #888; }
+    .close-modal:hover { color: #e74c3c; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.97em; }
+    .form-group input { width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; }
+  </style>
   <script type="module">
     import { initBarangPage } from '../js/barang.js';
     initBarangPage();
