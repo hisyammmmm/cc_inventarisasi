@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tambah Barang - Inventarisasi</title>
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/tambah-barang.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h2 class="header-title">Sistem Inventarisasi Barang</h2>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="window.location.href='./barang.html'">Kembali</button>
+        <button class="logout-btn">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="form-container">
+      <div class="form-header">
+        <h3 class="form-title">Tambah Barang Baru</h3>
+      </div>
+      <form id="tambahBarangForm" class="tambah-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="kode_barang">Kode Barang</label>
+            <input type="text" id="kode_barang" required placeholder="Masukkan kode barang">
+          </div>
+          <div class="form-group">
+            <label for="nama_barang">Nama Barang</label>
+            <input type="text" id="nama_barang" required placeholder="Masukkan nama barang">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="kategori">Kategori</label>
+            <select id="kategori" required>
+              <option value="">Pilih Kategori</option>
+              <option value="Elektronik">Elektronik</option>
+              <option value="Furniture">Furniture</option>
+              <option value="ATK">ATK (Alat Tulis Kantor)</option>
+              <option value="Alat Kebersihan">Alat Kebersihan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jumlah">Jumlah</label>
+            <input type="number" id="jumlah" required min="1" placeholder="Masukkan jumlah">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="satuan">Satuan</label>
+            <input type="text" id="satuan" required placeholder="pcs, unit, set, dll">
+          </div>
+          <div class="form-group">
+            <label for="kondisi">Kondisi</label>
+            <select id="kondisi" required>
+              <option value="">Pilih Kondisi</option>
+              <option value="Baik">Baik</option>
+              <option value="Rusak Ringan">Rusak Ringan</option>
+              <option value="Rusak Berat">Rusak Berat</option>
+              <option value="Hilang">Hilang</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lokasi">Lokasi</label>
+          <input type="text" id="lokasi" required placeholder="Masukkan lokasi barang">
+        </div>
+
+        <div class="form-group">
+          <label for="keterangan">Keterangan (Opsional)</label>
+          <textarea id="keterangan" rows="4" placeholder="Masukkan keterangan tambahan..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="window.location.href='./barang.html'">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Barang</button>
+        </div>
+      </form>
+      <div id="tambahMsg" class="message"></div>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { initTambahBarangPage } from '../js/tambah-barang.js';
+    initTambahBarangPage();
+  </script>
+</body>
+</html>

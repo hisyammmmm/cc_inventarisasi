@@ -53,10 +53,18 @@ const getUserById = async (req, res) => {
   }
 };
 
-
+// Register user
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password, role } = req.body;  // Hapus isActive dari req.body
+    const { username, email, password, role } = req.body;
+
+    // Validasi input
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username, email, and password are required'
+      });
+    }
 
     // Cek apakah username atau email sudah ada
     const existingUser = await User.findOne({
@@ -76,12 +84,12 @@ const registerUser = async (req, res) => {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Buat pengguna baru tanpa isActive
+    // Buat pengguna baru
     const newUser = await User.create({
       username,
       email,
       password: hashedPassword,
-      role: role || 'user'  // Hapus isActive dari objek yang dikirimkan
+      role: role || 'user'
     });
 
     // Hapus password dari response
@@ -102,12 +110,10 @@ const registerUser = async (req, res) => {
   }
 };
 
-
-// Login user
-// Login user - Versi tanpa JWT/token
+// Login user - Fixed version
 const loginUser = async (req, res) => {
   try {
-    console.log('Login attempt:', req.body); // Debug log
+    console.log('Login attempt:', req.body);
     const { email, password } = req.body;
 
     // Validasi input
@@ -120,7 +126,7 @@ const loginUser = async (req, res) => {
 
     // Cari user berdasarkan email
     const user = await User.findOne({ where: { email } });
-    console.log('User found:', user ? 'Yes' : 'No'); // Debug log
+    console.log('User found:', user ? 'Yes' : 'No');
 
     if (!user) {
       return res.status(401).json({
@@ -131,7 +137,7 @@ const loginUser = async (req, res) => {
 
     // Verifikasi password dengan bcrypt
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log('Password valid:', isPasswordValid); // Debug log
+    console.log('Password valid:', isPasswordValid);
 
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -149,18 +155,19 @@ const loginUser = async (req, res) => {
       console.log('Warning: Could not update lastLogin:', updateError.message);
     }
 
-    // Hapus password dari user response
-    const userResponse = user.toJSON();
-    delete userResponse.password;
-
-    // Kirim respons tanpa token
+    // Kirim respons - FIX: pastikan field konsisten
     res.status(200).json({
       success: true,
       message: 'Login successful',
-      data: { user: userResponse },
+      user: {
+        id: user.id,
+        username: user.username, // ✅ Fix: pakai 'username' bukan 'name'
+        email: user.email,
+        role: user.role || 'user'
+      }
     });
   } catch (error) {
-    console.error('Login error:', error); // Debug log
+    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Error during login',
@@ -168,8 +175,6 @@ const loginUser = async (req, res) => {
     });
   }
 };
-
-
 
 // Update user
 const updateUser = async (req, res) => {

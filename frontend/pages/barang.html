@@ -18,7 +18,12 @@
   <div class="container">
     <div class="table-container">
       <div class="table-header">
-        <h3 class="table-title">Data Barang</h3>
+        <div class="table-header-content">
+          <h3 class="table-title">Data Barang</h3>
+          <button class="btn btn-primary" onclick="window.location.href='./tambah-barang.html'">
+            + Tambah Barang
+          </button>
+        </div>
       </div>
       <div class="table-wrapper">
         <table id="barangTable">
@@ -42,4 +47,12 @@
           </tbody>
         </table>
       </div>
-    </div
+    </div>
+  </div>
+  
+  <script type="module">
+    import { initBarangPage } from '../js/barang.js';
+    initBarangPage();
+  </script>
+</body>
+</html>
