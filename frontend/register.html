@@ -3,16 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <title>Register - Inventarisasi</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .register-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e1e5e9;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #registerMsg {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+    }
+
+    #registerMsg:not(:empty) {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    #registerMsg.success {
+      background: #efe;
+      color: #363;
+      border: 1px solid #cfc;
+    }
+
+    #registerMsg.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+
+    .login-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .register-container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h2>Register</h2>
-  <form id="registerForm">
-    <label>Username: <input type="text" id="username" required></label><br>
-    <label>Email: <input type="email" id="email" required></label><br>
-    <label>Password: <input type="password" id="password" required></label><br>
-    <button type="submit">Register</button>
-  </form>
-  <div id="registerMsg"></div>
+  <div class="register-container">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+      </div>
+      <button type="submit">Register</button>
+    </form>
+    <div id="registerMsg"></div>
+    <div class="login-link">
+      Sudah punya akun? <a href="login.html">Login di sini</a>
+    </div>
+  </div>
+  
   <script>
     document.getElementById('registerForm').onsubmit = async function(e) {
       e.preventDefault();
@@ -25,11 +197,14 @@
         body: JSON.stringify({ username, email, password })
       });
       const data = await res.json();
+      const msgElement = document.getElementById('registerMsg');
       if(data.success) {
-        document.getElementById('registerMsg').innerText = 'Registrasi berhasil, silakan login.';
+        msgElement.innerText = 'Registrasi berhasil, silakan login.';
+        msgElement.className = 'success';
         setTimeout(() => window.location.href = 'login.html', 1500);
       } else {
-        document.getElementById('registerMsg').innerText = data.message || 'Registrasi gagal';
+        msgElement.innerText = data.message || 'Registrasi gagal';
+        msgElement.className = 'error';
       }
     }
   </script>
