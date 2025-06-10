@@ -9,13 +9,17 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:5500',
-    'http://127.0.0.1:5500'
+    'http://127.0.0.1:5500',
+    'https://inventarisasi-fe-dot-b-05-450916.uc.r.appspot.com'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
   optionsSuccessStatus: 200
 };
+
+app.get("/", (req, res) => res.send("API is working")); // pastikan ada views/index.ejs
+
 
 // CORS middleware
 app.use(cors(corsOptions));
