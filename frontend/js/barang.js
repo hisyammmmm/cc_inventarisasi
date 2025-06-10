@@ -128,7 +128,7 @@ async function showEditModal(id) {
     document.getElementById('edit_kategori').value = barang.kategori;
     document.getElementById('edit_jumlah').value = barang.jumlah;
     document.getElementById('edit_satuan').value = barang.satuan;
-    document.getElementById('edit_kondisi').value = barang.kondisi;
+    document.getElementById('edit_kondisi').value = barang.kondisi || '';
     document.getElementById('edit_lokasi').value = barang.lokasi;
     document.getElementById('edit_keterangan').value = barang.keterangan || '';
     document.getElementById('editModal').style.display = 'block';

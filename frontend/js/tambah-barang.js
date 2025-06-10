@@ -36,12 +36,12 @@ async function handleTambahBarang(formData) {
 
   try {
     // ✅ Request tanpa Authorization header
-    const response = await fetch(`${BASE_URL}/`, {
+    const response = await fetch(`${BASE_URL}/barang`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(dataToSend)
+      body: JSON.stringify(formData)
     });
 
     const data = await response.json();
@@ -155,6 +155,11 @@ export function initTambahBarangPage() {
       return;
     }
     
+    // Ambil user id dari localStorage jika ada
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.id) {
+      formData.created_by = user.id;
+    }
     // Submit form
     await handleTambahBarang(formData);
   });
