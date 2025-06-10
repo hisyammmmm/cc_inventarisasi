@@ -1,0 +1,30 @@
+runtime: python39
+service: inventarisasi-fe
+instance_class: F1
+
+handlers:
+  # Handler untuk halaman utama (login)
+  - url: /
+    static_files: login.html
+    upload: login.html
+
+  # Handler untuk file HTML statis
+  - url: /login.html
+    static_files: login.html
+    upload: login.html
+
+  - url: /register.html
+    static_files: register.html
+    upload: register.html
+
+  - url: /barang.html
+    static_files: barang.html
+    upload: barang.html
+
+  # Handler untuk semua file statis lainnya (CSS, JS, images, dll)
+  - url: /(.*)
+    static_files: \1
+    upload: (.*)
+
+# Opsional: pengaturan cache
+default_expiration: "1h"

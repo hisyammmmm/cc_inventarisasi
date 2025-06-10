@@ -1,5 +1,5 @@
 // Configuration
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "https://inventarisasi-be-691768696804.us-central1.run.app";
 
 // ✅ FIX: checkAuth tanpa token
 export function checkAuth() {
