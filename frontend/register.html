@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Inventarisasi</title>
+</head>
+<body>
+  <h2>Register</h2>
+  <form id="registerForm">
+    <label>Username: <input type="text" id="username" required></label><br>
+    <label>Email: <input type="email" id="email" required></label><br>
+    <label>Password: <input type="password" id="password" required></label><br>
+    <button type="submit">Register</button>
+  </form>
+  <div id="registerMsg"></div>
+  <script>
+    document.getElementById('registerForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('http://localhost:8080/register', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ username, email, password })
+      });
+      const data = await res.json();
+      if(data.success) {
+        document.getElementById('registerMsg').innerText = 'Registrasi berhasil, silakan login.';
+        setTimeout(() => window.location.href = 'login.html', 1500);
+      } else {
+        document.getElementById('registerMsg').innerText = data.message || 'Registrasi gagal';
+      }
+    }
+  </script>
+</body>
+</html>

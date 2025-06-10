@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Barang - Inventarisasi</title>
+</head>
+<body>
+  <h2>Data Barang</h2>
+  <button onclick="logout()">Logout</button>
+  <table border="1" id="barangTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Kode</th>
+        <th>Nama</th>
+        <th>Kategori</th>
+        <th>Jumlah</th>
+        <th>Satuan</th>
+        <th>Kondisi</th>
+        <th>Lokasi</th>
+        <th>Keterangan</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+
+    async function loadBarang() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+      const res = await fetch('http://localhost:8080/', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      const tbody = document.querySelector('#barangTable tbody');
+      tbody.innerHTML = '';
+      (Array.isArray(data) ? data : []).forEach(barang => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${barang.id}</td>
+          <td>${barang.kode_barang}</td>
+          <td>${barang.nama_barang}</td>
+          <td>${barang.kategori}</td>
+          <td>${barang.jumlah}</td>
+          <td>${barang.satuan}</td>
+          <td>${barang.kondisi}</td>
+          <td>${barang.lokasi}</td>
+          <td>${barang.keterangan || ''}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    loadBarang();
+  </script>
+</body>
+</html>

@@ -104,11 +104,10 @@ const registerUser = async (req, res) => {
 
 
 // Login user
-// Login user - Versi aman dengan error handling yang baik
+// Login user - Versi tanpa JWT/token
 const loginUser = async (req, res) => {
   try {
     console.log('Login attempt:', req.body); // Debug log
-    
     const { email, password } = req.body;
 
     // Validasi input
@@ -143,36 +142,22 @@ const loginUser = async (req, res) => {
 
     // Update waktu login terakhir - HANYA jika field ada
     try {
-      // Cek apakah field lastLogin ada di model
       if (user.lastLogin !== undefined) {
         await user.update({ lastLogin: new Date() });
       }
     } catch (updateError) {
       console.log('Warning: Could not update lastLogin:', updateError.message);
-      // Lanjutkan proses login meskipun update lastLogin gagal
     }
-
-    // Cek environment variable
-    const jwtSecret = process.env.ACCESS_TOKEN_SECRET || process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      console.error('JWT Secret not found in environment variables');
-      return res.status(500).json({
-        success: false,
-        message: 'Server configuration error',
-      });
-    }
-
-    console.log('Token generated successfully'); // Debug log
 
     // Hapus password dari user response
     const userResponse = user.toJSON();
     delete userResponse.password;
 
-    // Kirim respons dengan token
+    // Kirim respons tanpa token
     res.status(200).json({
       success: true,
       message: 'Login successful',
-      data: { user: userResponse, token },
+      data: { user: userResponse },
     });
   } catch (error) {
     console.error('Login error:', error); // Debug log
