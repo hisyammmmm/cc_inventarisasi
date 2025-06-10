@@ -11,35 +11,20 @@ handlers:
   - url: /js
     static_dir: js
     
-  # Serve pages directory
-  - url: /pages
-    static_dir: pages
-    
-  # Root URL mengarah ke login.html di folder pages
+  # Root URL mengarah ke login.html
   - url: /
-    static_files: pages/login
-    upload: pages/login\.html
-    
-  # Route untuk halaman-halaman lain
-  - url: /login
     static_files: pages/login.html
     upload: pages/login\.html
     
-  - url: /register  
-    static_files: pages/register.html
-    upload: pages/register\.html
+  # Pattern untuk semua file HTML (dengan dan tanpa ekstensi)
+  - url: /(.*\.html)
+    static_files: pages/\1
+    upload: pages/.*\.html
     
-  - url: /barang
-    static_files: pages/barang.html
-    upload: pages/barang\.html
-    
-  - url: /edit-barang
-    static_files: pages/edit-barang.html
-    upload: pages/edit-barang\.html
-    
-  - url: /tambah-barang
-    static_files: pages/tambah-barang.html
-    upload: pages/tambah-barang\.html
+  # Pattern untuk file HTML tanpa ekstensi
+  - url: /(login|barang|register|edit-barang|tambah-barang)
+    static_files: pages/\1.html
+    upload: pages/.*\.html
     
   # Serve semua file statis lainnya
   - url: /(.*)
