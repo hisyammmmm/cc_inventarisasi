@@ -141,7 +141,7 @@
     <div class="form-container">
       <div class="form-header">
         <h3 class="form-title">Edit Barang</h3>
-        <button class="btn btn-secondary" onclick="window.location.href='./barang'">
+        <button class="btn btn-secondary" onclick="window.location.href='./barang.html'">
           ← Kembali
         </button>
       </div>
@@ -228,7 +228,7 @@
 
     // Check authentication
     if (!checkAuth()) {
-      window.location.href = '../login';
+      window.location.href = '../login.html';
     }
 
     // Setup logout button
@@ -240,7 +240,7 @@
 
     if (!barangId) {
       alert('ID barang tidak ditemukan');
-      window.location.href = './barang';
+      window.location.href = './barang.html';
     }
 
     // Populate form with existing data
@@ -256,7 +256,7 @@
     // Cancel button
     document.getElementById('cancelBtn').addEventListener('click', () => {
       if (confirm('Apakah Anda yakin ingin membatalkan? Perubahan tidak akan disimpan.')) {
-        window.location.href = './barang';
+        window.location.href = './barang.html';
       }
     });
 
@@ -287,7 +287,7 @@
         
         if (result.success) {
           alert('Barang berhasil diperbarui!');
-          window.location.href = './barang';
+          window.location.href = './barang.html';
         } else {
           alert(result.message || 'Gagal memperbarui barang');
         }

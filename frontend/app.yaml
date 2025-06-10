@@ -17,7 +17,7 @@ handlers:
     
   # Root URL mengarah ke login.html di folder pages
   - url: /
-    static_files: pages/login.html
+    static_files: pages/login
     upload: pages/login\.html
     
   # Route untuk halaman-halaman lain
