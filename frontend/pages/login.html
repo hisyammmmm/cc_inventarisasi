@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Inventarisasi</title>
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2 class="auth-title">Login</h2>
+    <form id="loginForm" class="auth-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <div id="loginMsg" class="message"></div>
+    <div class="auth-link">
+      Belum punya akun? <a href="./register.html">Daftar di sini</a>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { initLoginForm } from '../js/auth.js';
+    initLoginForm();
+  </script>
+</body>
+</html>
