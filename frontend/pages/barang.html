@@ -84,7 +84,14 @@
         <input type="hidden" id="edit_id">
         <div class="form-group"><label>Kode Barang</label><input type="text" id="edit_kode_barang" readonly></div>
         <div class="form-group"><label>Nama Barang</label><input type="text" id="edit_nama_barang" required></div>
-        <div class="form-group"><label>Kategori</label><input type="text" id="edit_kategori" required></div>
+        <div class="form-group"><label>Kategori</label>
+          <select id="edit_kategori" required>
+            <option value="Elektronik">Elektronik</option>
+            <option value="Furniture">Furniture</option>
+            <option value="ATK">ATK</option>
+            <option value="Alat Kebersihan">Alat Kebersihan</option>
+          </select>
+        </div>
         <div class="form-group"><label>Jumlah</label><input type="number" id="edit_jumlah" required min="1"></div>
         <div class="form-group"><label>Satuan</label><input type="text" id="edit_satuan" required></div>
         <div class="form-group"><label>Kondisi</label><input type="text" id="edit_kondisi" required></div>
@@ -101,7 +108,7 @@
     .close-modal:hover { color: #e74c3c; }
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; margin-bottom: 4px; font-size: 0.97em; }
-    .form-group input { width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; }
+    .form-group input, .form-group select { width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; }
   </style>
   <script type="module">
     import { initBarangPage } from '../js/barang.js';
