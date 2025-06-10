@@ -1,4 +1,4 @@
-import { BASE_URL, checkAuth, logout, showMessage, clearMessage } from './utils.js';
+import { BASE_URL, checkAuth, logout, getCurrentUser, showMessage, clearMessage } from './utils.js';
 
 // Generate auto kode barang
 function generateKodeBarang(kategori) {
@@ -14,22 +14,38 @@ function generateKodeBarang(kategori) {
   return `${prefix}-${timestamp}`;
 }
 
-// Handle form submission
+// ✅ FIX: Handle form submission dengan user ID
 async function handleTambahBarang(formData) {
-  const token = checkAuth();
-  if (!token) return;
+  if (!checkAuth()) return;
+
+  // ✅ Ambil user data dari localStorage
+  const currentUser = getCurrentUser();
+  if (!currentUser || !currentUser.id) {
+    showMessage('tambahMsg', 'User data tidak ditemukan, silakan login ulang');
+    setTimeout(() => {
+      window.location.href = './login.html';
+    }, 2000);
+    return;
+  }
+
+  // ✅ Tambahkan user ID ke form data
+  const dataToSend = {
+    ...formData,
+    created_by: currentUser.id
+  };
 
   try {
+    // ✅ Request tanpa Authorization header
     const response = await fetch(`${BASE_URL}/`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(dataToSend)
     });
 
     const data = await response.json();
+    console.log('Tambah barang response:', data); // Debug log
 
     if (response.ok && data.success) {
       showMessage('tambahMsg', 'Barang berhasil ditambahkan!', 'success');
@@ -84,10 +100,22 @@ function setupFormValidation() {
   });
 }
 
+// Display current user info
+function displayUserInfo() {
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+    console.log('Current user:', currentUser); // Debug log
+    // Bisa ditambahkan display username di header jika mau
+  }
+}
+
 // Initialize Tambah Barang Page
 export function initTambahBarangPage() {
   // Check authentication
-  checkAuth();
+  if (!checkAuth()) return;
+  
+  // Display user info
+  displayUserInfo();
   
   // Setup logout button
   document.querySelector('.logout-btn').addEventListener('click', logout);

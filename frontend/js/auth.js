@@ -1,7 +1,7 @@
-// ===== FRONTEND (auth.js) - FIXED VERSION =====
+// ===== FRONTEND (auth.js) - FIXED VERSION WITHOUT TOKEN =====
 import { BASE_URL, showMessage, clearMessage } from './utils.js';
 
-// Login Function - FIXED
+// Login Function - FIXED untuk non-JWT
 export async function handleLogin(email, password) {
   try {
     console.log('Attempting login...'); // Debug log
@@ -16,14 +16,9 @@ export async function handleLogin(email, password) {
     console.log('Login response:', data); // Debug log
     
     if (data.success) {
-      // ✅ FIX: Backend mengirim data.user, bukan data.data.user
-      // Jika ada token, simpan token (atau skip jika tidak ada JWT)
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-      }
-      
-      // ✅ FIX: Simpan user data dari data.user, bukan data.data.user
+      // ✅ FIX: Simpan user data langsung dari data.user (sesuai backend response)
       localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('isLoggedIn', 'true'); // Flag login tanpa token
       
       showMessage('loginMsg', 'Login berhasil! Mengalihkan...', 'success');
       setTimeout(() => {
@@ -100,76 +95,3 @@ export function initRegisterForm() {
     await handleRegister(username, email, password);
   });
 }
-
-// ===== BACKEND (UserController.js) - ALTERNATIVE CONSISTENT VERSION =====
-
-// Option 1: Keep current backend structure, frontend sudah disesuaikan di atas
-
-// Option 2: Change backend to match frontend expectations
-const loginUserConsistent = async (req, res) => {
-  try {
-    console.log('Login attempt:', req.body);
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email and password are required',
-      });
-    }
-
-    const user = await User.findOne({ where: { email } });
-    console.log('User found:', user ? 'Yes' : 'No');
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid email or password',
-      });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log('Password valid:', isPasswordValid);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid email or password',
-      });
-    }
-
-    // Update lastLogin (optional)
-    try {
-      if (user.lastLogin !== undefined) {
-        await user.update({ lastLogin: new Date() });
-      }
-    } catch (updateError) {
-      console.log('Warning: Could not update lastLogin:', updateError.message);
-    }
-
-    console.log('Sending successful response...');
-    
-    // ✅ Structure yang konsisten dengan frontend expectations
-    return res.status(200).json({
-      success: true,
-      message: 'Login successful',
-      data: {
-        // token: generateJWT(user.id), // Uncomment jika pakai JWT
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role || 'user'
-        }
-      }
-    });
-
-  } catch (error) {
-    console.error('Login error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error during login',
-      error: error.message,
-    });
-  }
-};

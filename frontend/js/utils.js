@@ -1,18 +1,26 @@
 // Configuration
 export const BASE_URL = "http://localhost:8080";
 
-// Utility Functions
+// ✅ FIX: checkAuth tanpa token
 export function checkAuth() {
-  const token = localStorage.getItem('token');
-  if (!token) {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const user = localStorage.getItem('user');
+  
+  if (!isLoggedIn || !user) {
     window.location.href = './login.html';
     return false;
   }
-  return token;
+  return true;
+}
+
+// ✅ FIX: getCurrentUser untuk mendapatkan user data
+export function getCurrentUser() {
+  const userData = localStorage.getItem('user');
+  return userData ? JSON.parse(userData) : null;
 }
 
 export function logout() {
-  localStorage.removeItem('token');
+  localStorage.removeItem('isLoggedIn');
   localStorage.removeItem('user');
   window.location.href = './login.html';
 }
@@ -29,15 +37,11 @@ export function clearMessage(elementId) {
   element.className = 'message';
 }
 
+// ✅ FIX: API request tanpa token
 export async function apiRequest(endpoint, options = {}) {
-  const token = localStorage.getItem('token');
   const defaultHeaders = {
     'Content-Type': 'application/json',
   };
-  
-  if (token) {
-    defaultHeaders['Authorization'] = `Bearer ${token}`;
-  }
   
   const config = {
     headers: { ...defaultHeaders, ...options.headers },

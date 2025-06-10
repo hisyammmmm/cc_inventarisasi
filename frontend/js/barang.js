@@ -18,15 +18,13 @@ function getStatusBadge(kondisi) {
   return `<span class="${className}">${kondisi}</span>`;
 }
 
-// Load Barang Data
+// ✅ FIX: Load Barang Data tanpa token
 export async function loadBarang() {
-  const token = checkAuth();
-  if (!token) return;
+  if (!checkAuth()) return;
   
   try {
-    const response = await fetch(`${BASE_URL}/`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    // ✅ Request tanpa Authorization header
+    const response = await fetch(`${BASE_URL}/`);
     
     const data = await response.json();
     const tbody = document.querySelector('#barangTable tbody');
@@ -63,6 +61,7 @@ export async function loadBarang() {
       tbody.appendChild(tr);
     });
   } catch (error) {
+    console.error('Error loading barang:', error);
     const tbody = document.querySelector('#barangTable tbody');
     tbody.innerHTML = `
       <tr>
@@ -78,6 +77,9 @@ export async function loadBarang() {
 
 // Initialize Barang Page
 export function initBarangPage() {
+  // Check authentication first
+  if (!checkAuth()) return;
+  
   // Setup logout button
   document.querySelector('.logout-btn').addEventListener('click', logout);
   
