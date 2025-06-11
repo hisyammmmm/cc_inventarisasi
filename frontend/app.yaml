@@ -3,32 +3,11 @@ service: inventarisasi-fe
 instance_class: F1
 
 handlers:
-  # Serve CSS files
-  - url: /css
-    static_dir: css
-    
-  # Serve JS files  
-  - url: /js
-    static_dir: js
-    
-  # Root URL mengarah ke login.html
   - url: /
     static_files: pages/login.html
-    upload: pages/login\.html
-    
-  # Pattern untuk semua file HTML (dengan dan tanpa ekstensi)
-  - url: /(.*\.html)
-    static_files: pages/\1
-    upload: pages/.*\.html
-    
-  # Pattern untuk file HTML tanpa ekstensi
-  - url: /(login|barang|register|edit-barang|tambah-barang)
-    static_files: pages/\1.html
-    upload: pages/.*\.html
-    
-  # Serve semua file statis lainnya
+    upload: pages/login.html
   - url: /(.*)
     static_files: \1
     upload: (.*)
-
+    
 default_expiration: "1h"
