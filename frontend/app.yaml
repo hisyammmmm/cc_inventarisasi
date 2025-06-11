@@ -3,11 +3,47 @@ service: inventarisasi-fe
 instance_class: F1
 
 handlers:
+  # Serve CSS files
+  - url: /css/(.*\.(css|map))
+    static_files: css/\1
+    upload: css/.*\.(css|map)
+    
+  # Serve JS files  
+  - url: /js/(.*\.(js|map))
+    static_files: js/\1
+    upload: js/.*\.(js|map)
+    
+  # Root URL mengarah ke login.html
   - url: /
     static_files: pages/login.html
-    upload: pages/login.html
+    upload: pages/login\.html
+    
+  # Handler spesifik untuk halaman HTML tanpa ekstensi
+  - url: /(login|barang|register|edit-barang|tambah-barang)
+    static_files: pages/\1.html
+    upload: pages/.*\.html
+    mime_type: text/html
+    
+  # Handler untuk file HTML dengan ekstensi
+  - url: /pages/(.*\.html)
+    static_files: pages/\1
+    upload: pages/.*\.html
+    mime_type: text/html
+    
+  # Handler untuk file HTML dengan ekstensi di root
+  - url: /(.*\.html)
+    static_files: pages/\1
+    upload: pages/.*\.html
+    mime_type: text/html
+    
+  # Serve favicon dan file aset lainnya
+  - url: /favicon\.ico
+    static_files: favicon.ico
+    upload: favicon\.ico
+    
+  # Handler catch-all untuk file statis lainnya (HARUS DI AKHIR)
   - url: /(.*)
     static_files: \1
     upload: (.*)
-    
+
 default_expiration: "1h"
