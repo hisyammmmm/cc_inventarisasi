@@ -29,7 +29,6 @@ const User = db.define("users", {
     allowNull: false,
     defaultValue: "user",
   },
-  // TAMBAHKAN field lastLogin jika ingin menggunakannya
   lastLogin: {
     type: DataTypes.DATE,
     allowNull: true,
