@@ -127,40 +127,36 @@ export function initTambahBarangPage() {
   setupFormValidation();
   
   // Handle form submission
-  document.getElementById('tambahBarangForm').addEventListener('submit', async (e) => {
+  document.getElementById('tambahBarangForm').onsubmit = async function(e) {
     e.preventDefault();
-    clearMessage('tambahMsg');
-    
-    // Get form data
+    const user = JSON.parse(localStorage.getItem('user'));
     const formData = {
-      kode_barang: document.getElementById('kode_barang').value.trim(),
-      nama_barang: document.getElementById('nama_barang').value.trim(),
+      kode_barang: document.getElementById('kode_barang').value,
+      nama_barang: document.getElementById('nama_barang').value,
       kategori: document.getElementById('kategori').value,
       jumlah: parseInt(document.getElementById('jumlah').value),
-      satuan: document.getElementById('satuan').value.trim(),
+      satuan: document.getElementById('satuan').value,
       kondisi: document.getElementById('kondisi').value,
-      lokasi: document.getElementById('lokasi').value.trim(),
-      keterangan: document.getElementById('keterangan').value.trim() || null
+      lokasi: document.getElementById('lokasi').value,
+      keterangan: document.getElementById('keterangan').value,
+      created_by: user ? user.id : null, // untuk kolom created_by (integer)
+      username: user ? user.username : 'unknown' // untuk log
     };
-    
-    // Basic validation
-    if (!formData.kode_barang || !formData.nama_barang || !formData.kategori || 
-        !formData.jumlah || !formData.satuan || !formData.kondisi || !formData.lokasi) {
-      showMessage('tambahMsg', 'Mohon lengkapi semua field yang wajib diisi');
-      return;
+    try {
+      const response = await fetch(`${BASE_URL}/barang`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        alert('Barang berhasil ditambahkan!');
+        window.location.href = './barang.html';
+      } else {
+        alert(data.message || 'Gagal menambah barang');
+      }
+    } catch (error) {
+      alert('Terjadi kesalahan saat menambah barang');
     }
-    
-    if (formData.jumlah < 1) {
-      showMessage('tambahMsg', 'Jumlah barang harus lebih dari 0');
-      return;
-    }
-    
-    // Ambil user id dari localStorage jika ada
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.id) {
-      formData.created_by = user.id;
-    }
-    // Submit form
-    await handleTambahBarang(formData);
-  });
+  };
 }

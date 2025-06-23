@@ -2,6 +2,9 @@
 
 import Barang from "../models/BarangModel.js";
 import User from "../models/UserModel.js";
+import BarangLog from '../models/BarangLogModel.js';
+import { Op } from 'sequelize';
+import { Parser as Json2csvParser } from 'json2csv';
 
 // Mendapatkan daftar semua barang
 export const getBarang = async (req, res) => {
@@ -18,7 +21,7 @@ export const getBarang = async (req, res) => {
 // Menambahkan barang baru - FIXED VERSION
 export const createBarang = async (req, res) => {
   try {
-    const { kode_barang, nama_barang, kategori, jumlah, satuan, kondisi, lokasi, keterangan, created_by } = req.body;
+    const { kode_barang, nama_barang, kategori, jumlah, satuan, kondisi, lokasi, keterangan, created_by, username } = req.body;
 
     // Validasi input required
     if (!kode_barang || !nama_barang || !kategori || !jumlah || !satuan || !kondisi || !lokasi) {
@@ -28,28 +31,13 @@ export const createBarang = async (req, res) => {
       });
     }
 
-    // Validasi created_by - karena tidak pakai JWT, ambil dari request body
-    if (!created_by) {
-      return res.status(400).json({
-        success: false,
-        message: 'User ID (created_by) diperlukan'
-      });
-    }
-
-    // Optional: Validasi apakah user exists
-    const userExists = await User.findByPk(created_by);
-    if (!userExists) {
-      return res.status(400).json({
-        success: false,
-        message: 'User tidak ditemukan'
-      });
-    }
+    // Deklarasikan created_by sebelum digunakan
+    // const created_by = username || 'unknown';
 
     // Cek duplikasi kode_barang
     const existingBarang = await Barang.findOne({
       where: { kode_barang }
     });
-
     if (existingBarang) {
       return res.status(400).json({
         success: false,
@@ -66,7 +54,23 @@ export const createBarang = async (req, res) => {
       kondisi,
       lokasi,
       keterangan: keterangan || null,
-      created_by: parseInt(created_by)
+      created_by: created_by || null // <-- harus integer atau null
+    });
+
+    // Simpan log ke tabel BarangLog
+    await BarangLog.create({
+      barangId: newBarang.id,
+      kode_barang: newBarang.kode_barang,
+      nama_barang: newBarang.nama_barang,
+      kategori: newBarang.kategori,
+      jumlah: newBarang.jumlah,
+      satuan: newBarang.satuan,
+      kondisi: newBarang.kondisi,
+      lokasi: newBarang.lokasi,
+      keterangan: newBarang.keterangan,
+      lastModifiedBy: username || 'unknown',
+      lastModifiedAt: new Date(),
+      lastAction: 'create'
     });
 
     res.status(201).json({
@@ -170,8 +174,7 @@ export const getBarangById = async (req, res) => {
 export const updateBarang = async (req, res) => {
   try {
     const { id } = req.params;
-    const { kode_barang, nama_barang, kategori, jumlah, satuan, kondisi, lokasi, keterangan } = req.body;
-
+    const { kode_barang, nama_barang, kategori, jumlah, satuan, kondisi, lokasi, keterangan, username } = req.body;
     const barang = await Barang.findByPk(id);
     if (!barang) {
       return res.status(404).json({ 
@@ -206,6 +209,22 @@ export const updateBarang = async (req, res) => {
       updated_at: new Date()
     });
 
+    // Simpan log ke tabel BarangLog
+    await BarangLog.create({
+      barangId: barang.id,
+      kode_barang: barang.kode_barang,
+      nama_barang: barang.nama_barang,
+      kategori: barang.kategori,
+      jumlah: barang.jumlah,
+      satuan: barang.satuan,
+      kondisi: barang.kondisi,
+      lokasi: barang.lokasi,
+      keterangan: barang.keterangan,
+      lastModifiedBy: username || 'unknown',
+      lastModifiedAt: new Date(),
+      lastAction: 'edit'
+    });
+
     res.json({
       success: true,
       message: 'Barang berhasil diperbarui',
@@ -222,13 +241,31 @@ export const updateBarang = async (req, res) => {
 // Menghapus barang berdasarkan ID
 export const deleteBarang = async (req, res) => {
   try {
-    const barang = await Barang.findByPk(req.params.id);
+    const { id } = req.params;
+    const { username } = req.body;
+    const barang = await Barang.findByPk(id);
     if (!barang) {
       return res.status(404).json({ 
         success: false,
         message: "Barang tidak ditemukan" 
       });
     }
+
+    // Simpan log ke tabel BarangLog sebelum hapus
+    await BarangLog.create({
+      barangId: barang.id,
+      kode_barang: barang.kode_barang,
+      nama_barang: barang.nama_barang,
+      kategori: barang.kategori,
+      jumlah: barang.jumlah,
+      satuan: barang.satuan,
+      kondisi: barang.kondisi,
+      lokasi: barang.lokasi,
+      keterangan: barang.keterangan,
+      lastModifiedBy: username || 'unknown',
+      lastModifiedAt: new Date(),
+      lastAction: 'delete'
+    });
 
     await barang.destroy();
     res.json({
@@ -240,5 +277,40 @@ export const deleteBarang = async (req, res) => {
       success: false,
       message: err.message 
     });
+  }
+};
+
+export const getBarangLog = async (req, res) => {
+  try {
+    const logs = await BarangLog.findAll({
+      order: [['lastModifiedAt', 'DESC']]
+    });
+    res.json({ logs });
+  } catch (err) {
+    res.status(500).json({ message: 'Gagal mengambil log', error: err.message });
+  }
+};
+
+export const clearBarangLog = async (req, res) => {
+  try {
+    await BarangLog.destroy({ where: {} });
+    res.json({ success: true, message: 'Semua log barang berhasil dihapus' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Gagal menghapus log', error: err.message });
+  }
+};
+
+export const exportBarangCSV = async (req, res) => {
+  try {
+    const barang = await Barang.findAll();
+    const fields = ['id', 'kode_barang', 'nama_barang', 'kategori', 'jumlah', 'satuan', 'kondisi', 'lokasi', 'keterangan'];
+    const opts = { fields, withBOM: true };
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(barang.map(b => b.toJSON()));
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="data-barang.csv"');
+    res.status(200).end(csv);
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Gagal export CSV', error: err.message });
   }
 };

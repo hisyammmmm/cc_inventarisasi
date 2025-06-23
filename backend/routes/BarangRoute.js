@@ -5,11 +5,18 @@ import {
   getBarangById,
   updateBarang,
   deleteBarang,
+  getBarangLog,
+  clearBarangLog,
+  exportBarangCSV
 } from "../controller/BarangController.js";
 
 const router = express.Router();
 
-// Semua route harus menggunakan verifyToken
+// Route tracking log harus di atas route dengan parameter :id
+router.get('/log', getBarangLog);
+router.delete('/log', clearBarangLog);
+router.get('/export/csv', exportBarangCSV);
+
 router.get("/", getBarang);
 router.post("/", createBarang);
 router.get("/:id", getBarangById);

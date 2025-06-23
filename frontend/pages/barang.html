@@ -20,9 +20,20 @@
       <div class="table-header">
         <div class="table-header-content">
           <h3 class="table-title">Data Barang</h3>
-          <button class="btn btn-primary" onclick="window.location.href='./tambah-barang.html'">
-            + Tambah Barang
-          </button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary" onclick="window.location.href='./tambah-barang.html'">
+              + Tambah Barang
+            </button>
+            <button class="btn btn-primary" id="btn-show-log" type="button">
+              &#128196; Lihat Log Barang
+            </button>
+            <button class="btn btn-danger" id="btn-clear-log" type="button" style="background: #e74c3c; color: #fff;">
+              🗑️ Clear Log
+            </button>
+            <button class="btn btn-success" id="btn-export-csv" type="button" style="background: #27ae60; color: #fff;">
+              ⬇️ Export CSV
+            </button>
+          </div>
         </div>
       </div>
       <div class="table-wrapper">
@@ -45,6 +56,30 @@
             <tr>
               <td colspan="10" class="loading">Memuat data...</td>
             </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrapper" id="logTableWrapper" style="display:none; margin-top:24px;">
+        <h3 class="table-title">Log Aktivitas Barang</h3>
+        <table id="logTable" class="log-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Waktu</th>
+              <th>Aksi</th>
+              <th>Nama Barang</th>
+              <th>Kode</th>
+              <th>Kategori</th>
+              <th>Jumlah</th>
+              <th>Satuan</th>
+              <th>Kondisi</th>
+              <th>Lokasi</th>
+              <th>Keterangan</th>
+              <th>Oleh</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Log akan diisi oleh JS -->
           </tbody>
         </table>
       </div>
@@ -75,6 +110,35 @@
     .btn-delete:hover {
       background: #c0392b;
     }
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .log-table th, .log-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+      font-size: 15px;
+    }
+    .log-table th {
+      background: #f5f6fa;
+      font-weight: 600;
+      color: #4a4a4a;
+    }
+    .log-table tr:last-child td {
+      border-bottom: none;
+    }
+    .log-table tbody tr:hover {
+      background: #f0f4ff;
+      transition: background 0.2s;
+    }
+    .log-table td {
+      color: #333;
+    }
   </style>
   <div id="editModal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -102,6 +166,9 @@
         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
       </form>
     </div>
+  </div>
+  <div id="log-section" style="display:none; margin-top:16px;">
+    <!-- Tracking log akan ditampilkan di sini -->
   </div>
   <style>
     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100vw; height: 100vh; overflow: auto; background: rgba(0,0,0,0.3); }

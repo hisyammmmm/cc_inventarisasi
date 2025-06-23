@@ -47,7 +47,7 @@ const Barang = db.define("barang", {
     allowNull: true,
   },
   created_by: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   created_at: {
@@ -58,6 +58,18 @@ const Barang = db.define("barang", {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  lastModifiedBy: {
+  type: DataTypes.INTEGER,
+  allowNull: true
+  },
+  lastModifiedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  lastAction: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
 }, {
   freezeTableName: true,
   timestamps: false,
